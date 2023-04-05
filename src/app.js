@@ -23,15 +23,9 @@ const httpServer = server.listen(8080, ()=> {
     console.log('Servidor Listo en puerto 8080')
 })
 
-const DB_NAME = 'Ecommerce'
-const DB_HOST = 'localhost'
-const DB_PORT = 27017
-
-
-const MONGO_URL = `mongodb://${DB_HOST}:${DB_PORT}/${DB_NAME}` ;
+const MONGO_URL = 'mongodb+srv://nahuell:wO6LiWqtBLoC45YL@cluster0.rgi9srv.mongodb.net/test';
 
 //Mongo Con Session
-
 
 server.use(
   Session({
@@ -41,9 +35,9 @@ server.use(
         useNewUrlParser: true,
         useUniFiedTopology: true
       },
-      ttl: 20
+      ttl: 60*3600
     }),
-    secret: 'Coder',
+    secret: 'coder',
     resave: true,
     saveUninitialized: true,
   })
@@ -51,6 +45,7 @@ server.use(
 
 initializePassport();
 server.use(passport.initialize())
+server.use(passport.session());
 
 //handlerbars
 server.engine('handlebars', handlebars.engine());
@@ -72,7 +67,8 @@ server.use("/api/session/" , sessionRoute)
 
 ///Mongosse
 mongoose.set('strictQuery', false)
-mongoose.connect('mongodb://localhost:27017/Ecommerce',
+mongoose.connect('mongodb+srv://nahuell:wO6LiWqtBLoC45YL@cluster0.rgi9srv.mongodb.net/test',
+
 
 (error)=>{
   if (error) {

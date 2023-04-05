@@ -3,7 +3,8 @@ const BdSessionManager = require('../dao/mongoManager/BdSessionManager')
 const { isValidPassword, createHashValue } = require('../utils/encrypt')
 
 
-const sessionLogin = async (req ,res) => {
+const sessionLogin = async (req, res) => {
+        
     try {
         const { email , password} = req.body
         const user = await BdSessionManager.getsession(email)
@@ -12,9 +13,9 @@ const sessionLogin = async (req ,res) => {
         } 
         const isValidComparePsw = await isValidPassword(password , user.password);
         if(!isValidComparePsw) {
-            return res.status(401).json({menssage: "Password incorrecta"})
+            return res.status(401).json({menssage: "Credenciales incorrectas"})
         }
-
+    
         if (email === "adminCoder@coder.com" && password === "adminCod3r123") { 
             const products = await BdProductManager.getProduct();
                 res.render("viewProduct", {
@@ -35,30 +36,20 @@ const sessionLogin = async (req ,res) => {
             message: "Error",
             playload: error.message
         })
-    }
+    } 
 }
 
 const register = async (req, res) =>{
-    try {
-        const {firstName , lastName ,email , password} = req.body
-        const pswHashed = await createHashValue(password); 
-        const user = {
-            firstName,
-            lastName,
-            email,
-            password: pswHashed,
-            rol: "users"
-        }
-        const users = await BdSessionManager.createSession(user)
-        req.session.user = { firstName ,lastName , email , rol}
-        return res.json(users)
-        
-    } catch (error) {
-        return res.status(500).json({
-            message:"Error",
-            playload: error.message
-        })
-    }
+    res.send ({
+        statuss: 'Success',
+        message:'Usuario Registrado',
+    })
+}
+
+const failregister = async (req , res) => {
+    res.send({
+        error:'Failed Register',
+    })
 }
 
 const logout = async (req, res) => {
@@ -81,4 +72,10 @@ const github = async(req, res) =>{
         console.log(error)
     }
 }
-module.exports = {sessionLogin , register , logout , github}
+module.exports = {
+    sessionLogin , 
+    register , 
+    logout ,
+    github , 
+    failregister,
+}
